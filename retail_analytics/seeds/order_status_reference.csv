@@ -1,0 +1,7 @@
+order_status,status_group,is_terminal,description
+completed,closed,true,Order successfully completed
+cancelled,closed,true,Order cancelled
+pending,open,false,Order awaiting processing
+processing,open,false,Order currently being processed
+refunded,closed,true,Order payment refunded
+shipped,open,false,Order dispatched for delivery

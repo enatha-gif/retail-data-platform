@@ -1,0 +1,177 @@
+version: 2
+
+models:
+  - name: dim_categories
+    description: "Product category dimension."
+    columns:
+      - name: category_key
+        data_tests:
+          - unique
+          - not_null
+      - name: category_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_customers
+    description: "Customer dimension."
+    columns:
+      - name: customer_key
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_products
+    description: "Product dimension enriched with category details."
+    columns:
+      - name: product_key
+        data_tests:
+          - unique
+          - not_null
+      - name: product_id
+        data_tests:
+          - unique
+          - not_null
+      - name: category_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_categories')
+                field: category_key
+
+  - name: dim_dates
+    description: "Calendar dimension."
+    columns:
+      - name: date_key
+        data_tests:
+          - unique
+          - not_null
+      - name: calendar_date
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_orders
+    description: "One record per customer order."
+    columns:
+      - name: order_id
+        data_tests:
+          - unique
+          - not_null
+      - name: order_key
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_key
+      - name: order_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_dates')
+                field: date_key
+      - name: order_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - completed
+                  - cancelled
+                  - pending
+                  - processing
+                  - refunded
+                  - shipped
+
+  - name: fct_order_items
+    description: "One record per product line within an order."
+    columns:
+      - name: order_item_id
+        data_tests:
+          - unique
+          - not_null
+      - name: order_item_key
+        data_tests:
+          - unique
+          - not_null
+      - name: product_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_key
+      - name: category_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_categories')
+                field: category_key
+      - name: customer_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_key
+      - name: order_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_dates')
+                field: date_key
+
+  - name: fct_payments
+    description: "One record per payment transaction."
+    columns:
+      - name: payment_id
+        data_tests:
+          - unique
+          - not_null
+      - name: payment_key
+        data_tests:
+          - unique
+          - not_null
+      - name: payment_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - successful
+                  - failed
+                  - pending
+                  - refunded
+      - name: customer_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_key
+      - name: order_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_dates')
+                field: date_key
+
+seeds:
+  - name: order_status_reference
+    description: "Business descriptions for standardized order statuses."
+    columns:
+      - name: order_status
+        data_tests:
+          - unique
+          - not_null

@@ -1,0 +1,14 @@
+﻿version: 2
+
+sources:
+  - name: retail_source
+    description: "Raw retail data loaded by the Python ETL pipeline."
+    schema: staging
+    tables:
+      - name: categories
+      - name: customers
+      - name: addresses
+      - name: products
+      - name: orders
+      - name: order_items
+      - name: payments

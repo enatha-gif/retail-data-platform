@@ -18,3 +18,8 @@ dbt_project/logs/
 .idea/
 .DS_Store
 Thumbs.db
+
+# dbt generated files
+retail_analytics/target/
+retail_analytics/dbt_packages/
+retail_analytics/logs/
